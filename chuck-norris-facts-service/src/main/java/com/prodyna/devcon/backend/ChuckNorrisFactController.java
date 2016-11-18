@@ -13,18 +13,15 @@
  */
 package com.prodyna.devcon.backend;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,14 +60,8 @@ public class ChuckNorrisFactController {
 	 */
 	@PostConstruct
 	public void loadChuckNorrisFacts() throws IOException {
-		URL factsFileUrl = getClass().getClassLoader().getResource(CHUCK_NORRIS_FACTS_FILE_NAME);
-		File factsFile = new File(factsFileUrl.getPath());
-		if (factsFile.exists()) {
-			chuckNorrisFacts = FileUtils.readLines(factsFile, "UTF-8");
-		} else {
-			log.log(Level.SEVERE, "Unable to load Chuck Norris Facts");
-			chuckNorrisFacts = Collections.singletonList("When Chuck Norris throws exceptions, it’s across the room.");
-		}
+		InputStream in = getClass().getClassLoader().getResource(CHUCK_NORRIS_FACTS_FILE_NAME).openStream();
+		chuckNorrisFacts = IOUtils.readLines(in, "UTF-8");
 	}
 
 	/**
